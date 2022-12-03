@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+             http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="1.0">
+    <!-- revisar esto de version 2.0, antes estaba 1.0, puede llevar a algun error -->
+    <!-- Nota: 15/9/2022 - En efecto, rompia todoo. Asi q lo volvi a bajar a ver. 1.0. Ignorar lo rojo -->
+
+    <persistence-unit name="db" transaction-type="RESOURCE_LOCAL">
+        <!-- <provider>org.hibernate.ejb.HibernatePersistence</provider> -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <class>domain.organizaciones.Organizacion</class>
+        <class>domain.organizaciones.sectores.Sector</class>
+        <class>domain.organizaciones.miembros.Miembro</class>
+        <class>domain.trayecto.Trayecto</class>
+        <class>domain.trayecto.TrayectoCompartido</class>
+        <class>domain.trayecto.Tramo</class>
+        <class>domain.trayecto.transporte.MedioDeTransporte</class>
+        <class>domain.trayecto.transporte.publico.TransportePublico</class>
+        <class>domain.trayecto.transporte.nopublico.Pie</class>
+        <class>domain.trayecto.transporte.nopublico.Bicicleta</class>
+        <class>domain.trayecto.transporte.nopublico.VehiculoParticular</class>
+        <class>domain.trayecto.transporte.nopublico.ServicioContratado</class>
+        <class>domain.trayecto.transporte.publico.Parada</class>
+        <class>domain.trayecto.transporte.publico.Linea</class>
+        <class>domain.organizaciones.datos.actividades.tipos.TipoDeConsumo</class>
+        <class>domain.organizaciones.datos.actividades.DatosActividades</class>
+        <class>domain.ubicaciones.Ubicacion</class>
+        <class>domain.ubicaciones.sectores.AgenteSectorial</class>
+        <class>domain.organizaciones.hc.HC</class>
+        <class>domain.notificaciones.NotificacionWhatsapp</class>
+        <class>domain.notificaciones.NotificacionEmail</class>
+        <class>presentacion.Usuario</class>
+
+        <properties>
+            <property name="hibernate.archive.autodetection" value="class"/>
+
+            <!-- Suponiendo q se usa MySQL. Si se usa otra, cambiar aca-->
+            <!--
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+            o con 'com.mysql.cj.jdbc.Driver' al final
+            -->
+            <property name="hibernate.connection.url" value="jdbc:mysql://dds-tpa-grupo-5-db.cuqimyd10j3z.us-east-1.rds.amazonaws.com:3306/dds?serverTimezone=UTC" />
+            <property name="hibernate.connection.username" value="root" />
+            <property name="hibernate.connection.password" value="Grupo5dds-" />
+
+            <!--<property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />
+            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:app-db" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+            -->
+
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />
+            <property name="use_sql_comments" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+
+    </persistence-unit>
+
+</persistence>

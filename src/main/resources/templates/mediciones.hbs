@@ -1,0 +1,72 @@
+{{#partial "content"}}
+<div class="left">
+  <br/>
+  <h3> Cargar medicion de forma manual </h3>
+
+  <form action="/mediciones-manual" method="POST">
+    <select id="tipoId" name="tipoConsumo" class="select-field">
+        {{#each consumos}}
+            <option value={{id}}> {{tipo}} </option>
+        {{/each}}
+    </select>
+
+    <div class="input-field">
+      <i class="fa fa-shield"></i>
+      <input type="text" placeholder="Valor" name="valor" id="valorId" value="200.50"/>
+    </div>
+
+    <select class="select-field" id="perId" name="periodicidad">
+        <option value="Mensual" selected>Mensual</option>
+        <option value="Anual">Anual</option>
+    </select>
+
+    <div class="input-field">
+      <i class="fa fa-shield"></i>
+      <input typetype="text" class="form-control" name="perImputacion" id="impId" value="05/2021" placeholder="05/2021"/>
+    </div>
+
+    <button type="submit" class="boton"> Subir Medicion </button>
+  </form>
+
+  <br/><br/>
+
+  <h3> Cargar la medición usando un archivo CSV </h3>
+  <form action="/mediciones-csv" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+          <input type="file" class="form-control" name="archivoCSV" id="archId">
+      </div>
+      <button type="submit" class="btn btn-primary"> Subir Archivo </button>
+  </form>
+
+  <br/><br/>
+
+  <h3> Listado de mediciones cargadas </h3>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"> Tipo de Consumo </th>
+        <th scope="col"> Valor </th>
+        <th scope="col"> Periodicidad </th>
+        <th scope="col"> Periodo Imputacion </th>
+        <th scope="col"> FE </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{#each orgs }}
+          {{#each datosActividades}}
+              <tr>
+                  <th scope="row"> {{tipoDeConsumo.tipo}} </td>
+                  <td> {{valor}} </td>
+                  <td> {{periodicidad}} </td>
+                  <td> {{periodoImputacion}} </td>
+                  <td> {{tipoDeConsumo.fe.valor}} </td>
+              </tr>
+          {{/each}}
+      {{/each}}
+    </tbody>
+  </table>
+
+{{/partial}}
+{{>base.hbs}}

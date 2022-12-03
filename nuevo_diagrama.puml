@@ -1,0 +1,256 @@
+' Link: https://plantuml.com/es/class-diagram
+
+@startuml
+
+' Repos
+
+class RepoOrganizaciones {}
+class RepoNotificaciones {}
+
+enum TipoOrganizacion {
+  GUBERNAMENTAL
+  ONG
+  EMPRESA 
+  INSTITUCION
+}
+
+enum ClasificacionOrg {
+  MINISTERIO
+  UNIVERSIDAD
+  ESCUELA
+  EMPRESA_SECTOR_PRIMARIO
+  EMPRESA_SECTOR_SECUNDARIO
+}
+
+class Organizacion {
+    + agregarSector(sector)
+    + aceptarVinculacionDeTrabajador(miembro, sector)
+    + cargarMediciones(pathCSV: String)
+    + hcMensual(): HC
+    + hcAnual(): HC
+}
+
+class Sector {
+    + combustibleConsumidoTransporteMiembros(): double
+}
+
+class Miembro {
+    + vincularTrabajadorConOrg(org, sector)
+    + registrarTrayecto(trayecto)
+}
+
+enum TipoDeDocumento {
+  DNI
+  LC
+  LE
+  CI
+}
+
+' Me voy por las ramas
+
+class Ubicacion {
+    + calcularDistanciaA(otraUbicacion): Distancia
+}
+
+class Localidad {}
+
+class Municipio implements SectorTerritorial{}
+
+class Provincia implements SectorTerritorial{}
+
+class Pais {}
+
+interface SectorTerritorial {
+    + List<Organizacion> orgsDentroDeSector()
+}
+
+class AgenteSectorial {
+    + hcSectorMensual(): HC
+    + hcSectorAnual(): HC
+}
+
+class HC {
+    + enGCO2(): double
+    + enKgCO2(): double
+    + enTnCO2(): double
+}
+
+enum UnidadHC {
+  gCO2
+  kgCO2
+  tnCO2
+}
+
+class Distancia {
+    + valorEnMetros(): double
+    + valorEnKm(): double 
+}
+
+enum UnidadDistancia {
+  KM
+  MTS
+}
+
+' vuelvo de las ramas
+
+class Trayecto {
+    + distanciaTotal(): Distancia
+    + combustibleTotalUtilizado(): double
+}
+
+class TrayectoCompartido extends Trayecto {}
+
+class Tramo {
+    + distancia(): Distancia
+    + admiteTrayectoCompartido(): boolean
+    + combustibleUtilizado(): double 
+}
+
+interface MedioDeTransporte {
+    + distancia(): Distancia
+    + admiteTrayectoCompartido(): boolean 
+    + getCombustibleConsumidoPorKM(): double
+}
+
+enum TipoTransportePublico {
+  TREN
+  SUBTE
+  COLECTIVO
+}
+
+class TransportePublico implements MedioDeTransporte {}
+
+class Linea {
+    + setUnidireccional()
+    + setBidireccional()
+    + distanciaEntreParadas(paradaInicio, paradaFin): Distancia
+}
+
+class Parada {}
+
+abstract class MedioNoPublico implements MedioDeTransporte {
+    getDireccionInicio(): Ubicacion
+    getDireccionFin(): Ubicacion
+} 
+
+class Pie extends MedioNoPublico {}
+class Bicicleta extends MedioNoPublico {}
+class ServicioContratado extends MedioNoPublico {}
+
+class TipoServicioContratado {
+    - String nombre
+}
+
+class VehiculoParticular extends MedioNoPublico {}
+
+enum TipoDeVehiculo {
+  MOTO
+  AUTO
+  CAMIONETA
+}
+
+enum TipoDeCombustible {
+  GNC
+  NAFTA
+  ELECTRICO
+  GASOIL
+}
+
+' API
+
+interface RetrofitGeoDds {}
+class ServicioGeoDds implements RetrofitGeoDds {}
+
+' Datos de Actividades
+
+class DatosActividades {
+  - valor: double
+  - periodicidad: String
+  - periodoImputacion: String
+
+  + impactoHC(): double
+}
+
+enum Actividad {
+  COMBUSTION_FIJA
+  COMBUSTION_MOVIL
+  ELECTRICIDAD
+  LOGISTICA_PRODUCTOS_RESIDUOS
+}
+
+enum Alcance {
+  DIRECTAS
+  INDIRECTAS_ELECTRICIDAD
+  INDIRECTAS_EXTERNAS
+}
+
+enum UnidadConsumo {
+  M3
+  LT
+  KG
+  KWH
+  KM
+  NINGUNA
+}
+
+class FactorEmision {
+  + valor: double
+}
+
+class TipoDeConsumo {
+  + cargarFactorEmision(factorEmision)
+}
+
+class TipoDeConsumoFactory {
+  + instance()
+  + buildTipoDeConsumo(tipo: String): TipoDeConsumo
+}
+
+Organizacion <--> "*" Sector
+Sector <--> "*" Miembro
+Miembro <---> "*" Trayecto
+Trayecto --> "*" Tramo
+Tramo --> MedioDeTransporte
+
+
+RepoOrganizaciones -> "*" Organizacion
+ClasificacionOrg <-- Organizacion
+TipoOrganizacion <-- Organizacion
+Organizacion ---> Ubicacion
+Miembro -> TipoDeDocumento
+TrayectoCompartido --> "*" Miembro
+TransportePublico --> TipoTransportePublico
+TransportePublico --> "2" Parada
+TransportePublico --> Linea
+Linea --> "*" Parada
+Linea --> TipoTransportePublico
+Parada --> Distancia
+Distancia -> UnidadDistancia
+
+Pie --> "2" Ubicacion
+Bicicleta --> "2" Ubicacion
+ServicioContratado --> "2" Ubicacion
+ServicioContratado --> TipoServicioContratado
+VehiculoParticular --> "2" Ubicacion
+VehiculoParticular --> TipoDeVehiculo
+VehiculoParticular --> TipoDeCombustible
+
+Ubicacion --> Localidad
+Localidad -> Municipio
+Municipio -> Provincia
+Provincia -> Pais
+AgenteSectorial --> SectorTerritorial
+
+Organizacion -> "*" DatosActividades
+DatosActividades -> TipoDeConsumo
+TipoDeConsumo --> Actividad
+TipoDeConsumo --> Alcance
+TipoDeConsumo --> UnidadConsumo
+TipoDeConsumo --> FactorEmision
+TipoDeConsumoFactory ..> TipoDeConsumo
+
+Organizacion ..> HC
+'HC <.... AgenteSectorial
+HC --> UnidadHC
+
+@enduml

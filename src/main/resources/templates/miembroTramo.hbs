@@ -1,0 +1,24 @@
+{{#partial "content"}}
+<form action="/agregarMiembro" method="POST">
+    {{#if miembros}}
+  <select class="select-field" id="miembro" name="miembro">
+      {{#each miembros}}
+          <option value={{id}}> {{nombre}}, {{apellido}} </option>
+      {{/each}}
+      <!--{{this.toString}}-->
+  </select>
+    <div class= "container">
+      <button name="agregar" type="submit" class="boton" value="fin">Definir Tramos</button>
+      <button name="agregar" type="submit" class="boton" value="seguir">Agregar Otro Miembro</button>
+    </div>
+
+    {{else}}
+        <h4 style="color: red">
+            No hay miembros con los que compartir
+            en la organizacion
+        </h4>
+    {{/if}}
+</form>
+
+{{/partial}}
+{{>base.hbs}}
